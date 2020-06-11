@@ -1,26 +1,48 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import Table from "./components/common/Table";
+import Form from './components/common/Form'
+
+// import './App.css';
+import 'bootstrap/dist/css/bootstrap.css';
+
+const data = [
+    {first: 'Mark', last: 'Otto', handle: '@motto', id: '1'},
+    {first: 'Carl', last: 'Reno', handle: '@ceno', id: '2'},
+    {first: 'Steve', last: 'Smith', handle: '@ssteve', id: '3'}
+]
+
+const columns = Object.keys(data[0]);
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [people, setPeople] = useState(data);
+    console.log(people);
+
+    const handleAppPerson = (personData) => {
+        const data = [...people, personData];
+        setPeople(data)
+    }
+
+    const getInitialPeopleData = () => {
+        return columns.reduce((cols, columnName) => {
+            cols[columnName] = "";
+            return cols;
+        }, {})
+    }
+
+    return (
+        <div className="container">
+            <Table
+                data={people}
+                columns={columns}
+                tableDescriptor="People"
+            />
+            <Form
+                initialData={getInitialPeopleData()}
+                columns={columns}
+                onAddData={handleAppPerson}
+            />
+        </div>
+    );
 }
 
 export default App;
