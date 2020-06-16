@@ -34,6 +34,9 @@ const Page = ({ data, tableDescriptor }) => {
         tableDescriptor={tableDescriptor}
         onDelete={onDelete}
       />
+      {getData.length > 0 ? null : (
+        <p>There are no {tableDescriptor} in the table</p>
+      )}
       <Form
         initialData={getInitialPeopleData()}
         columns={columns}
