@@ -6,7 +6,6 @@ const Page = ({ data, tableDescriptor }) => {
   const columns = Object.keys(data[0]);
 
   const [getData, setData] = useState(data);
-  console.log(getData);
 
   const handleAppPerson = (personData) => {
     const data = [...getData, personData];
@@ -20,6 +19,12 @@ const Page = ({ data, tableDescriptor }) => {
     }, {});
   };
 
+  const onDelete = (index) => {
+    const copy = [...getData];
+    copy.splice(index, 1);
+    setData(copy);
+  };
+
   return (
     <div className="container">
       <h1>{tableDescriptor} from the Star Wars Universe</h1>
@@ -27,6 +32,7 @@ const Page = ({ data, tableDescriptor }) => {
         data={getData}
         columns={columns}
         tableDescriptor={tableDescriptor}
+        onDelete={onDelete}
       />
       <Form
         initialData={getInitialPeopleData()}
