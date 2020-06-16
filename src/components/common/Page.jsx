@@ -22,6 +22,7 @@ const Page = ({ data, tableDescriptor }) => {
 
   return (
     <div className="container">
+      <h1>{tableDescriptor} from the Star Wars Universe</h1>
       <Table
         data={getData}
         columns={columns}
