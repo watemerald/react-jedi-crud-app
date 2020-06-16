@@ -1,6 +1,12 @@
 import React from 'react';
+import Button from "./Button";
 
-function Table({columns, data, tableDescriptor}) {
+function Table({columns, data, tableDescriptor, onDelete}) {
+
+    if (!data.length) {
+        return <h2>There is no data for {tableDescriptor} page</h2>
+    }
+
     return (
         <table className="table table-dark">
             <thead>
@@ -16,8 +22,15 @@ function Table({columns, data, tableDescriptor}) {
                 <tr key={item.id}>
                     <th scope="row">{++index}</th>
                     {columns.map(columnTitle => (
-                        <td key={item[columnTitle]+columnTitle}>{item[columnTitle]}</td>
+                        <td key={item[columnTitle] + columnTitle}>{item[columnTitle]}</td>
                     ))}
+                    <td>
+                        <Button
+                            onClick={() => onDelete(item.id)}
+                            classes="btn btn-danger"
+                            label="Delete"
+                        />
+                    </td>
                 </tr>
             ))}
             </tbody>
