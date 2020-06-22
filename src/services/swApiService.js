@@ -18,3 +18,42 @@ export const getPeople = async () => {
     })
   );
 };
+
+export const planetColumns = [
+  "name",
+  "climate",
+  "diameter",
+  "terrain",
+  "population",
+];
+
+export const getPlanets = async () => {
+  const planetsResponse = await (await fetch(`${url}/planets`)).json();
+
+  return planetsResponse.results.map(
+    ({ name, climate, diameter, terrain, population }) => ({
+      name,
+      climate,
+      diameter,
+      terrain,
+      population,
+      id: nanoid(),
+    })
+  );
+};
+
+export const starshipColumns = ["name", "passengers", "crew", "length"];
+
+export const getStarships = async () => {
+  const starshipsResponse = await (await fetch(`${url}/starships`)).json();
+
+  return starshipsResponse.results.map(
+    ({ name, passengers, crew, length }) => ({
+      name,
+      passengers,
+      crew,
+      length,
+      id: nanoid(),
+    })
+  );
+};
