@@ -9,6 +9,8 @@ import PlanetsPage from "./components/pages/PlanetsPage";
 import StarshipsPage from "./components/pages/StarshipsPage";
 import NotFound from "./components/pages/NotFound";
 import PeopleForm from "./components/pages/forms/PeopleForm";
+import PlanetsForm from "./components/pages/forms/PlanetsForm";
+import StarshipsForm from "./components/pages/forms/StarshipsForm";
 
 function App() {
   return (
@@ -20,6 +22,15 @@ function App() {
             path="/people/:id"
             render={(props) => <PeopleForm {...props} />}
           />
+          <Route
+            path="/planets/:id"
+            render={(props) => <PlanetsForm {...props} />}
+          />
+          <Route
+            path="/starships/:id"
+            render={(props) => <StarshipsForm {...props} />}
+          />
+
           <Route path="/people" component={PeoplePage} />
           <Route path="/planets" component={PlanetsPage} />
           <Route path="/starships" component={StarshipsPage} />

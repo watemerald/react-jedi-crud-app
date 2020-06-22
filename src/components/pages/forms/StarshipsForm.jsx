@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { peopleColumns } from "../../../services/swApiService";
-import { usePeople } from "../../../services/localStorageServise";
+import { starshipColumns } from "../../../services/swApiService";
+import { useStarships } from "../../../services/localStorageServise";
 import Button from "../../common/Button";
 import Input from "../../common/Input";
 import { nanoid } from "nanoid";
 
-const columns = peopleColumns;
+const columns = starshipColumns;
 const initialData = () => {
   return columns.reduce((cols, columnName) => {
     cols[columnName] = "";
@@ -13,20 +13,22 @@ const initialData = () => {
   }, {});
 };
 
-const PeopleForm = ({ match }) => {
+const StarshipsForm = ({ match }) => {
   const [formErrors, setFormErrors] = useState({});
 
   const [editMode, setEditMode] = useState(false);
 
-  const [people, setPeople] = usePeople();
+  const [starships, setStarships] = useStarships();
 
-  const [personData, setPersonData] = useState(() => {
-    const personId = match.params.id;
-    if (personId === "new") return initialData();
-    console.log(personId);
-    const existingPersonData = people.find((person) => person.id === personId);
+  const [starshipData, setStarshipData] = useState(() => {
+    const planetId = match.params.id;
+    if (planetId === "new") return initialData();
+
+    const existingStarshipData = starships.find(
+      (planet) => planet.id === planetId
+    );
     setEditMode(true);
-    return existingPersonData;
+    return existingStarshipData;
   });
 
   const validate = (data) => {
@@ -37,7 +39,7 @@ const PeopleForm = ({ match }) => {
 
   const onSubmit = (event) => {
     event.preventDefault();
-    const errors = validate(personData);
+    const errors = validate(starshipData);
 
     // Don't submit if there are any errors
     if (Object.keys(errors).length) {
@@ -45,27 +47,27 @@ const PeopleForm = ({ match }) => {
     }
 
     if (editMode) {
-      const newPeopleList = people.map((person) =>
-        person.id === personData.id ? personData : person
+      const newPeopleList = starships.map((person) =>
+        person.id === starshipData.id ? starshipData : person
       );
-      setPeople(newPeopleList);
+      setStarships(newPeopleList);
     } else {
-      setPeople([...people, { ...personData, id: nanoid() }]);
+      setStarships([...starships, { ...starshipData, id: nanoid() }]);
     }
 
-    window.location.replace("/");
+    window.location.replace("/planets");
   };
 
   const handleChange = (event) => {
     const { currentTarget: input } = event;
-    const data = { ...personData };
+    const data = { ...starshipData };
     const errors = { ...formErrors };
     if (errors[input.name]) {
       delete errors[input.name];
     }
 
     data[input.name] = input.value;
-    setPersonData(data);
+    setStarshipData(data);
     setFormErrors(errors);
   };
 
@@ -76,7 +78,7 @@ const PeopleForm = ({ match }) => {
           key={colName}
           name={colName}
           label={colName[0].toUpperCase() + colName.slice(1)}
-          value={personData[colName]}
+          value={starshipData[colName]}
           type="input"
           error={formErrors[colName]}
           onChange={(event) => handleChange(event)}
@@ -92,4 +94,4 @@ const PeopleForm = ({ match }) => {
   );
 };
 
-export default PeopleForm;
+export default StarshipsForm;
