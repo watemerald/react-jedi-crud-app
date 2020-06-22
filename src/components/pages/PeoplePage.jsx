@@ -1,29 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Table from "../common/Table";
 import Form from "../common/Form";
-import { getPeople } from "../../services/swApiService";
+import { peopleColumns } from "../../services/swApiService";
+import { usePeople } from "../../services/localStorageServise";
+import { Link } from "react-router-dom";
 
-const data = [
-  { first: "Mark", last: "Otto", handle: "@motto", id: "1" },
-  { first: "Carl", last: "Reno", handle: "@ceno", id: "2" },
-  { first: "Steve", last: "Smith", handle: "@ssteve", id: "3" },
-];
-
-const columns = Object.keys(data[0]);
+const columns = peopleColumns;
 
 const PeoplePage = () => {
   const pageName = "People";
-  const [people, setPeople] = useState([]);
-
-  useEffect(() => {
-    const getData = async () => {
-      const data = await getPeople();
-      console.log(data);
-      setPeople(data);
-    };
-
-    getData();
-  }, []);
+  const [people, setPeople] = usePeople();
 
   const handleAppPerson = (personData) => {
     const data = [...people, personData];
@@ -53,16 +39,18 @@ const PeoplePage = () => {
   return (
     <>
       <h2>{pageName} from Star Wars Universe</h2>
+      <Link
+        to={"/people/new"}
+        className="btn btn-warning"
+        style={{ marginBottom: 25 }}
+      >
+        New Person
+      </Link>
       <Table
         data={people}
         columns={getColumnNames()}
         tableDescriptor={pageName}
         onDelete={handleDelete}
-      />
-      <Form
-        initialData={getInitialPeopleData()}
-        columns={getColumnNames()}
-        onAddData={handleAppPerson}
       />
     </>
   );

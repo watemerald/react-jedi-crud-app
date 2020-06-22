@@ -8,6 +8,7 @@ import PeoplePage from "./components/pages/PeoplePage";
 import PlanetsPage from "./components/pages/PlanetsPage";
 import StarshipsPage from "./components/pages/StarshipsPage";
 import NotFound from "./components/pages/NotFound";
+import PeopleForm from "./components/pages/forms/PeopleForm";
 
 function App() {
   return (
@@ -15,6 +16,10 @@ function App() {
       <Navbar />
       <div className="container">
         <Switch>
+          <Route
+            path="/people/:id"
+            render={(props) => <PeopleForm {...props} />}
+          />
           <Route path="/people" component={PeoplePage} />
           <Route path="/planets" component={PlanetsPage} />
           <Route path="/starships" component={StarshipsPage} />
