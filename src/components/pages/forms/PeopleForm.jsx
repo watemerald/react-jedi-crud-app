@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { peopleColumns } from "../../../services/swApiService";
 import { usePeople } from "../../../services/localStorageServise";
 import Button from "../../common/Button";
@@ -15,19 +15,19 @@ const initialPersonData = () => {
 
 const PeopleForm = ({ match }) => {
   const [formErrors, setFormErrors] = useState({});
-  const [personData, setPersonData] = useState({ ...initialPersonData });
+
   const [editMode, setEditMode] = useState(false);
 
   const [people, setPeople] = usePeople();
 
-  useEffect(() => {
+  const [personData, setPersonData] = useState(() => {
     const personId = match.params.id;
-    if (personId === "new") return;
+    if (personId === "new") return initialPersonData;
 
     const existingPersonData = people.find((person) => person.id === personId);
-    setPersonData(existingPersonData);
     setEditMode(true);
-  }, []);
+    return existingPersonData;
+  });
 
   const validate = (data) => {
     let errors = {};

@@ -1,14 +1,12 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { getPeople } from "./swApiService";
 
 export const usePeople = () => {
-  const [people, setPeople] = useState([]);
-
-  useEffect(() => {
+  const [people, setPeople] = useState(() => {
     const getData = async () => {
       const data = await getPeople();
       console.log(data);
-      setPeople(data);
+      return data;
     };
 
     // Upon loading the page, check if there are any objects in local storage already.
@@ -16,14 +14,15 @@ export const usePeople = () => {
 
     let localdata = localStorage.getItem("people");
     if (localdata) {
-      setPeople(JSON.parse(localdata));
+      return JSON.parse(localdata);
     } else {
-      getData();
+      return getData();
     }
-  }, []);
+  });
 
   // Save the people list to localStorage whenever the list changes
   useEffect(() => {
+    console.log("saving people", people);
     localStorage.setItem("people", JSON.stringify(people));
   }, [people]);
 
