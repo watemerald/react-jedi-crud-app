@@ -1,92 +1,40 @@
 import { useState, useEffect } from "react";
 import { getPeople, getStarships, getPlanets } from "./swApiService";
 
-export const usePeople = () => {
-  const [data, setData] = useState([]);
+const localStorageHookFactory = (name, getter) => {
+  return () => {
+    const [data, setData] = useState(() => {
+      // Upon loading the page, check if there are any objects in local storage already.
+      let localdata = JSON.parse(localStorage.getItem(name));
+      if (localdata) return localdata;
 
-  useEffect(() => {
-    const getData = async () => {
-      const data = await getPeople();
-      console.log(data);
-      return setData(data);
-    };
+      // If there is no data in localstorage, set temporary state before useEffect will update it using the API
+      return [];
+    });
 
-    // Upon loading the page, check if there are any objects in local storage already.
-    // If there are, then load them, otherwise get from API
+    useEffect(() => {
+      const getData = async () => {
+        const data = await getter();
+        console.log(data);
+        return setData(data);
+      };
 
-    let localdata = localStorage.getItem("people");
-    if (localdata) {
-      return setData(JSON.parse(localdata));
-    } else {
-      return getData();
-    }
-  }, []);
+      // If there are, then load them, otherwise get from API
 
-  // Save the people list to localStorage whenever the list changes
-  useEffect(() => {
-    console.log("saving people", data);
-    localStorage.setItem("people", JSON.stringify(data));
-  }, [data]);
+      let localdata = localStorage.getItem(name);
+      if (!localdata) getData();
+    }, []);
 
-  return [data, setData];
+    // Save the people list to localStorage whenever the list changes
+    useEffect(() => {
+      console.log(`saving ${name}`, data);
+      localStorage.setItem(name, JSON.stringify(data));
+    }, [data]);
+
+    return [data, setData];
+  };
 };
 
-export const usePlanets = () => {
-  const [data, setData] = useState([]);
-
-  useEffect(() => {
-    const getData = async () => {
-      const data = await getPlanets();
-      console.log(data);
-      return setData(data);
-    };
-
-    // Upon loading the page, check if there are any objects in local storage already.
-    // If there are, then load them, otherwise get from API
-
-    let localdata = localStorage.getItem("planets");
-    if (localdata) {
-      return setData(JSON.parse(localdata));
-    } else {
-      return getData();
-    }
-  }, []);
-
-  // Save the planets list to localStorage whenever the list changes
-  useEffect(() => {
-    console.log("saving planets", data);
-    localStorage.setItem("planets", JSON.stringify(data));
-  }, [data]);
-
-  return [data, setData];
-};
-
-export const useStarships = () => {
-  const [data, setData] = useState([]);
-
-  useEffect(() => {
-    const getData = async () => {
-      const data = await getStarships();
-      console.log(data);
-      return setData(data);
-    };
-
-    // Upon loading the page, check if there are any objects in local storage already.
-    // If there are, then load them, otherwise get from API
-
-    let localdata = localStorage.getItem("starships");
-    if (localdata) {
-      return setData(JSON.parse(localdata));
-    } else {
-      return getData();
-    }
-  }, []);
-
-  // Save the starships list to localStorage whenever the list changes
-  useEffect(() => {
-    console.log("saving starships", data);
-    localStorage.setItem("starships", JSON.stringify(data));
-  }, [data]);
-
-  return [data, setData];
-};
+export const usePeople = localStorageHookFactory("people", getPeople);
+export const usePlanets = localStorageHookFactory("planets", getPlanets);
+export const useStarships = localStorageHookFactory("starships", getStarships);
