@@ -4,8 +4,18 @@ import { useStarships } from "../../../services/localStorageServise";
 import Button from "../../common/Button";
 import Input from "../../common/Input";
 import { nanoid } from "nanoid";
+import * as joi from "@hapi/joi";
 
 const columns = starshipColumns;
+
+const schema = joi.object({
+  name: joi.string().min(3).max(30).required(),
+  passengers: joi.string().required(),
+  crew: joi.string().required(),
+  length: joi.string().required(),
+  id: joi.any(),
+});
+
 const initialData = () => {
   return columns.reduce((cols, columnName) => {
     cols[columnName] = "";
@@ -32,17 +42,28 @@ const StarshipsForm = ({ match }) => {
   });
 
   const validate = (data) => {
-    let errors = {};
+    const { error } = schema.validate(data);
 
-    return errors;
+    if (error) {
+      const errorList = error.details.reduce((acc, { context, message }) => {
+        const key = context.key;
+
+        acc[key] = message;
+        return acc;
+      }, {});
+
+      setFormErrors(errorList);
+    }
+
+    return error;
   };
 
   const onSubmit = (event) => {
     event.preventDefault();
-    const errors = validate(starshipData);
+    const error = validate(starshipData);
 
     // Don't submit if there are any errors
-    if (Object.keys(errors).length) {
+    if (error) {
       return;
     }
 
@@ -55,7 +76,7 @@ const StarshipsForm = ({ match }) => {
       setStarships([...starships, { ...starshipData, id: nanoid() }]);
     }
 
-    window.location.replace("/planets");
+    window.location.replace("/starships");
   };
 
   const handleChange = (event) => {
