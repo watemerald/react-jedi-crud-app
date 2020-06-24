@@ -3,7 +3,7 @@ import Button from "./Button";
 import { nanoid } from "nanoid";
 
 function Table({ columns, data, tableDescriptor, onDelete }) {
-  if (!data.length) {
+  if (!data || !data.length) {
     return <h2>There is no data for {tableDescriptor} page</h2>;
   }
 

@@ -14,6 +14,7 @@ export const getPeople = async () => {
       mass,
       gender,
       birth_year,
+      beloved: false,
       id: nanoid(),
     })
   );

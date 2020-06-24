@@ -20,7 +20,7 @@ const PeoplePage = () => {
   };
 
   const getColumns = () => {
-    if (!people.length) return [];
+    if (!people || !people.length) return [];
 
     return Object.keys(people[0]).map((colName) => {
       if (colName === "beloved") {

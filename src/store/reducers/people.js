@@ -5,7 +5,7 @@ import {
 } from "../actions/people";
 
 const initialState = {
-  allPeople: [],
+  allPeople: undefined,
 };
 
 function people(state = initialState, action) {
