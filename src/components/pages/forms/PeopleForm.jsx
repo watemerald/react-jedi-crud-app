@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { peopleColumns } from "../../../services/swApiService";
-import { usePeople } from "../../../services/localStorageServise";
 import Button from "../../common/Button";
 import Input from "../../common/Input";
 import { nanoid } from "nanoid";
 import * as joi from "@hapi/joi";
+import { useDispatch, useSelector } from "react-redux";
+import { setPeople } from "../../../store/actions/people";
+import { getAllPeople } from "../../../store/selectors/people";
 
 const columns = peopleColumns;
 
@@ -25,11 +27,16 @@ const initialData = () => {
 };
 
 const PeopleForm = ({ match }) => {
+  const dispatch = useDispatch();
   const [formErrors, setFormErrors] = useState({});
 
   const [editMode, setEditMode] = useState(false);
 
-  const [people, setPeople] = usePeople();
+  const people = useSelector((state) => getAllPeople(state));
+
+  const setPeopleList = (people) => {
+    dispatch(setPeople(people));
+  };
 
   const [personData, setPersonData] = useState(() => {
     const personId = match.params.id;
@@ -70,9 +77,12 @@ const PeopleForm = ({ match }) => {
       const newPeopleList = people.map((person) =>
         person.id === personData.id ? personData : person
       );
-      setPeople(newPeopleList);
+      setPeopleList(newPeopleList);
     } else {
-      setPeople([...people, { ...personData, id: nanoid() }]);
+      setPeopleList([
+        ...people,
+        { ...personData, id: nanoid(), beloved: false },
+      ]);
     }
 
     window.location.replace("/");
