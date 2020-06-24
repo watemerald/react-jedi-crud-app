@@ -1,6 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { setPeople } from "./store/actions/people";
+import { setStarships } from "./store/actions/starships";
+import { setPlanets } from "./store/actions/planets";
 
+import { getPeople, getPlanets, getStarships } from "./services/swApiService";
+
+import { getAllPeople } from "./store/selectors/people";
+import { getAllPlanets } from "./store/selectors/planets";
+import { getAllStarships } from "./store/selectors/starships";
 // import './App.css';
 import "bootstrap/dist/css/bootstrap.css";
 import Navbar from "./components/navbar/NavBar";
@@ -13,6 +22,33 @@ import PlanetsForm from "./components/pages/forms/PlanetsForm";
 import StarshipsForm from "./components/pages/forms/StarshipsForm";
 
 function App() {
+  const dispatch = useDispatch();
+
+  const people = useSelector((state) => getAllPeople(state));
+  const planets = useSelector((state) => getAllPlanets(state));
+  const starships = useSelector((state) => getAllStarships(state));
+
+  useEffect(() => {
+    async function fetchPeople() {
+      const peopleResponse = await getPeople();
+      dispatch(setPeople(peopleResponse));
+    }
+
+    async function fetchPlanets() {
+      const planetsResponse = await getPlanets();
+      dispatch(setPlanets(planetsResponse));
+    }
+
+    async function fetchStarships() {
+      const starshipsResponse = await getStarships();
+      dispatch(setStarships(starshipsResponse));
+    }
+
+    if (people === undefined) fetchPeople();
+    if (planets === undefined) fetchPlanets();
+    if (starships === undefined) fetchStarships();
+  }, []);
+
   return (
     <>
       <Navbar />

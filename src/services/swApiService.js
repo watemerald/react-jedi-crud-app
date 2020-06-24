@@ -14,6 +14,7 @@ export const getPeople = async () => {
       mass,
       gender,
       birth_year,
+      beloved: false,
       id: nanoid(),
     })
   );
@@ -37,6 +38,7 @@ export const getPlanets = async () => {
       diameter,
       terrain,
       population,
+      beloved: false,
       id: nanoid(),
     })
   );
@@ -53,6 +55,7 @@ export const getStarships = async () => {
       passengers,
       crew,
       length,
+      beloved: false,
       id: nanoid(),
     })
   );
