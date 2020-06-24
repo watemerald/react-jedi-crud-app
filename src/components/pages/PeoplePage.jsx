@@ -1,21 +1,40 @@
 import React from "react";
 import Table from "../common/Table";
-import { usePeople } from "../../services/localStorageServise";
 import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { getAllPeople } from "../../store/selectors/people";
+import { deletePerson, setBelovedStatus } from "../../store/actions/people";
 
 const PeoplePage = () => {
+  const dispatch = useDispatch();
   const pageName = "People";
-  const [people, setPeople] = usePeople();
+
+  const people = useSelector((state) => getAllPeople(state));
+
+  const handleBelovedStatus = (id) => {
+    dispatch(setBelovedStatus(id));
+  };
 
   const handleDelete = (id) => {
-    const filteredPeople = people.filter((person) => person.id !== id);
-    setPeople(filteredPeople);
+    dispatch(deletePerson(id));
   };
 
   const getColumns = () => {
     if (!people.length) return [];
 
     return Object.keys(people[0]).map((colName) => {
+      if (colName === "beloved") {
+        return {
+          colName,
+          content: ({ beloved, id }) => (
+            <input
+              type="checkbox"
+              checked={beloved}
+              onChange={() => handleBelovedStatus(id)}
+            />
+          ),
+        };
+      }
       if (colName === "name") {
         return {
           colName,
