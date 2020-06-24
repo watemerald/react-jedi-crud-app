@@ -5,6 +5,9 @@ import Button from "../../common/Button";
 import Input from "../../common/Input";
 import { nanoid } from "nanoid";
 import * as joi from "@hapi/joi";
+import { useDispatch, useSelector } from "react-redux";
+import { setStarships } from "../../../store/actions/starships";
+import { getAllStarships } from "../../../store/selectors/starships";
 
 const columns = starshipColumns;
 
@@ -14,6 +17,7 @@ const schema = joi.object({
   crew: joi.string().required(),
   length: joi.string().required(),
   id: joi.any(),
+  beloved: joi.boolean(),
 });
 
 const initialData = () => {
@@ -24,11 +28,16 @@ const initialData = () => {
 };
 
 const StarshipsForm = ({ match }) => {
+  const dispatch = useDispatch();
   const [formErrors, setFormErrors] = useState({});
 
   const [editMode, setEditMode] = useState(false);
 
-  const [starships, setStarships] = useStarships();
+  const starships = useSelector((state) => getAllStarships(state));
+
+  const setStarshipsList = (starships) => {
+    dispatch(setStarships(starships));
+  };
 
   const [starshipData, setStarshipData] = useState(() => {
     const planetId = match.params.id;
@@ -71,9 +80,9 @@ const StarshipsForm = ({ match }) => {
       const newPeopleList = starships.map((person) =>
         person.id === starshipData.id ? starshipData : person
       );
-      setStarships(newPeopleList);
+      setStarshipsList(newPeopleList);
     } else {
-      setStarships([...starships, { ...starshipData, id: nanoid() }]);
+      setStarshipsList([...starships, { ...starshipData, id: nanoid() }]);
     }
 
     window.location.replace("/starships");

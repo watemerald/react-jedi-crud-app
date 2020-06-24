@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { planetColumns } from "../../../services/swApiService";
-import { usePlanets } from "../../../services/localStorageServise";
 import Button from "../../common/Button";
 import Input from "../../common/Input";
 import { nanoid } from "nanoid";
 import * as joi from "@hapi/joi";
+import { useDispatch, useSelector } from "react-redux";
+import { setPlanets } from "../../../store/actions/planets";
+import { getAllPlanets } from "../../../store/selectors/planets";
 
 const columns = planetColumns;
 
@@ -15,6 +17,7 @@ const schema = joi.object({
   terrain: joi.string().required(),
   population: joi.string().required(),
   id: joi.any(),
+  beloved: joi.boolean(),
 });
 
 const initialData = () => {
@@ -25,11 +28,16 @@ const initialData = () => {
 };
 
 const PlanetsForm = ({ match }) => {
+  const dispatch = useDispatch();
   const [formErrors, setFormErrors] = useState({});
 
   const [editMode, setEditMode] = useState(false);
 
-  const [planets, setPlanets] = usePlanets();
+  const planets = useSelector((state) => getAllPlanets(state));
+
+  const setPlanetsList = (planets) => {
+    dispatch(setPlanets(planets));
+  };
 
   const [planetData, setPlanetData] = useState(() => {
     const planetId = match.params.id;
@@ -70,9 +78,9 @@ const PlanetsForm = ({ match }) => {
       const newPeopleList = planets.map((person) =>
         person.id === planetData.id ? planetData : person
       );
-      setPlanets(newPeopleList);
+      setPlanetsList(newPeopleList);
     } else {
-      setPlanets([...planets, { ...planetData, id: nanoid() }]);
+      setPlanetsList([...planets, { ...planetData, id: nanoid() }]);
     }
 
     window.location.replace("/planets");

@@ -1,22 +1,43 @@
 import React from "react";
 import Table from "../common/Table";
 
-import { useStarships } from "../../services/localStorageServise";
+import { useSelector, useDispatch } from "react-redux";
+import { getAllStarships } from "../../store/selectors/starships";
+import {
+  deleteStarship,
+  setBelovedStatus,
+} from "../../store/actions/starships";
 import { Link } from "react-router-dom";
 
 const StarshipsPage = () => {
+  const dispatch = useDispatch();
   const pageName = "Starships";
-  const [starships, setStarships] = useStarships();
+  const starships = useSelector((state) => getAllStarships(state));
+
+  const handleBelovedStatus = (id) => {
+    dispatch(setBelovedStatus(id));
+  };
 
   const handleDelete = (id) => {
-    const filteredPlanets = starships.filter((starship) => starship.id !== id);
-    setStarships(filteredPlanets);
+    dispatch(deleteStarship(id));
   };
 
   const getColumns = () => {
-    if (!starships.length) return [];
+    if (!starships || !starships.length) return [];
 
     return Object.keys(starships[0]).map((colName) => {
+      if (colName === "beloved") {
+        return {
+          colName,
+          content: ({ beloved, id }) => (
+            <input
+              type="checkbox"
+              checked={beloved}
+              onChange={() => handleBelovedStatus(id)}
+            />
+          ),
+        };
+      }
       if (colName === "name") {
         return {
           colName,

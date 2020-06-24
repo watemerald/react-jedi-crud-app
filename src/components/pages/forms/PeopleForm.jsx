@@ -17,6 +17,7 @@ const schema = joi.object({
   gender: joi.string().valid("male", "female", "n/a").required(),
   birth_year: joi.string().required(),
   id: joi.any(),
+  beloved: joi.boolean(),
 });
 
 const initialData = () => {
